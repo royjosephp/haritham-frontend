@@ -7,7 +7,7 @@ import "package:haritham_noel/global.dart";
 class AuthService {
   static final String _baseUrl = SERVER_IP;
   
-  static Future<String> generatePassword(String phone) async {
+  Future<String> generatePassword(String phone) async {
     var res = await http.post(
       "$_baseUrl/auth/generate",
       body: jsonEncode({
@@ -22,7 +22,7 @@ class AuthService {
   }
 
 
-  static Future<String> verifyPassword(String otp) async {
+  Future<String> verifyPassword(String otp) async {
     var res = await http.post(
       "$_baseUrl/auth/verify",
       body: jsonEncode({

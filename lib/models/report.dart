@@ -1,6 +1,6 @@
 
-class Report {
-    Report({
+class ReportModel {
+    ReportModel({
         this.id,
         this.location,
         this.state,
@@ -13,23 +13,23 @@ class Report {
     });
 
     String id;
-    Location location;
+    LocationModel location;
     String state;
     String district;
     String type;
     String description;
-    Image image;
+    ImageModel image;
     String user;
     int v;
 
-    factory Report.fromJson(Map<String, dynamic> json) => Report(
+    factory ReportModel.fromJson(Map<String, dynamic> json) => ReportModel(
         id: json["_id"],
-        location: Location.fromJson(json["location"]),
+        location: LocationModel.fromJson(json["location"]),
         state: json["state"],
         district: json["district"],
         type: json["type"],
-        description: json["description"],
-        image: Image.fromJson(json["image"]),
+        description: json["description"] == null ? null : json["description"],
+        image: json["image"] == null ? null : ImageModel.fromJson(json["image"]),
         user: json["user"],
         v: json["__v"],
     );
@@ -47,52 +47,32 @@ class Report {
     };
 }
 
-class Image {
-    Image({
+class ImageModel {
+    ImageModel({
         this.id,
         this.data,
         this.contentType,
     });
 
     String id;
-    Data data;
+    String data;
     String contentType;
 
-    factory Image.fromJson(Map<String, dynamic> json) => Image(
+    factory ImageModel.fromJson(Map<String, dynamic> json) => ImageModel(
         id: json["_id"],
-        data: Data.fromJson(json["data"]),
+        data: json["data"],
         contentType: json["contentType"],
     );
 
     Map<String, dynamic> toJson() => {
         "_id": id,
-        "data": data.toJson(),
+        "data": data,
         "contentType": contentType,
     };
 }
 
-class Data {
-    Data({
-        this.type,
-        this.data,
-    });
-
-    String type;
-    List<int> data;
-
-    factory Data.fromJson(Map<String, dynamic> json) => Data(
-        type: json["type"],
-        data: List<int>.from(json["data"].map((x) => x)),
-    );
-
-    Map<String, dynamic> toJson() => {
-        "type": type,
-        "data": List<dynamic>.from(data.map((x) => x)),
-    };
-}
-
-class Location {
-    Location({
+class LocationModel {
+    LocationModel({
         this.coordinates,
         this.id,
         this.type,
@@ -104,7 +84,7 @@ class Location {
     String type;
     String description;
 
-    factory Location.fromJson(Map<String, dynamic> json) => Location(
+    factory LocationModel.fromJson(Map<String, dynamic> json) => LocationModel(
         coordinates: List<int>.from(json["coordinates"].map((x) => x)),
         id: json["_id"],
         type: json["type"],

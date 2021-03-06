@@ -1,11 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:haritham_noel/services/AuthService.dart';
+
+import 'package:haritham_noel/global.dart';
 
 import 'dart:convert' show json, base64, ascii;
 
 
 import 'pages/login_page.dart';
 import 'pages/home_page.dart';
+
+import 'package:provider/provider.dart';
+import 'package:haritham_noel/notifiers/auth_notifier.dart';
+import 'package:haritham_noel/notifiers/report_notifier.dart';
 
 final storage = FlutterSecureStorage();
 
@@ -14,48 +21,61 @@ void main() {
 }
 
 class MyApp extends StatelessWidget {
-
-  Future<String> get jwtOrEmpty async {
-    var jwt = await storage.read(key: "jwt");
-    if(jwt == null) return "";
-    return jwt;
-  }
-
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Haritham',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
-      home: FutureBuilder(
-        future: jwtOrEmpty,            
-        builder: (context, snapshot) {
-          if(!snapshot.hasData) return CircularProgressIndicator();
-          if(snapshot.data != "") {
-            var str = snapshot.data;
-            var jwt = str.split(".");
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (_) => AuthNotifier.instance()),
+        ChangeNotifierProvider(create: (_) => ReportNotifier()),
 
-            if(jwt.length !=3) {
-              return LoginPage();
-            } else {
-              var payload = json.decode(ascii.decode(base64.decode(base64.normalize(jwt[1]))));
-              print("payload: $payload");
-              print("str: $str");
-              print("jwt: $jwt");
-              if(DateTime.fromMillisecondsSinceEpoch(payload["iat"]*1000).isAfter(DateTime.now())) {
-                return HomePage(str, payload);
-              } else {
-                return LoginPage();
-              }
-            }
-          } else {
-            return LoginPage();
-          }
-        }
-      ),
+      ],
+      child: MaterialApp(
+        title: 'Flutter Provider Proto',
+        theme: ThemeData(
+          primarySwatch: Colors.green,
+          visualDensity: VisualDensity.adaptivePlatformDensity,
+        ),
+        home: ProviderWrap(),
+      )
     );
   }
 }
 
+class ProviderWrap extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return _showScreen(context);
+  }
+}
+
+Widget _showScreen(BuildContext context) {
+  switch (context.watch<AuthNotifier>().status) {
+    case AuthStatus.Authenticating:
+    case AuthStatus.Unauthenticated:
+      return LoginPage();
+    case AuthStatus.Uninitialized:
+      return SplashScreen();
+    case AuthStatus.Authenticated:
+      return HomePage();
+  }
+  return Container();
+}
+
+class SplashScreen extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Material(
+      child: Center(
+        child: Column(
+          children: [
+            CircularProgressIndicator(),
+            Text(
+              'Splash screen',
+              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+            )
+          ],
+        ),
+      ),
+    );
+  }
+}

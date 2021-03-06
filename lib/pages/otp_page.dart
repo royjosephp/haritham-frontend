@@ -1,13 +1,8 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
-import 'package:haritham_noel/services/AuthService.dart';
+import 'package:haritham_noel/notifiers/auth_notifier.dart';
+import 'package:provider/provider.dart';
 
-import 'package:http/http.dart' as http;
-
-import '../constants/strings.dart' show Strings;
-import '../main.dart' show storage;
-import 'home_page.dart';
+import 'package:haritham_noel/pages/home_page.dart';
 
 
 class OTPPage extends StatelessWidget {
@@ -57,20 +52,12 @@ void displayDialog(context, title, text) => showDialog(
                 onPressed: () async {
                   var phone = _otpController.text;
                   if (_otpController.text.isNotEmpty) {
-                    var output = await AuthService.verifyPassword(phone);
-                    print(output);
-                    if(output != null) {
-                      var jwt = jsonDecode(output)["token"];
-                      storage.write(key: "jwt", value: jwt);
-                      print("otp");
-                      print(jwt);
-                      displayDialog(context, "Verification Successfull", "$jwt");
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => HomePage.fromBase64(jwt)
-                        )
-                      );
+                    var verified = await context
+                                    .read<AuthNotifier>()
+                                    .verifyPassword(phone);
+                    if(verified) {
+                      displayDialog(context, "Verification Successfull", "Verification Successfull");
+                      Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (_) => HomePage()), (route) => false);
                     } else {
                       displayDialog(context, "An Error Occurred", "Server Error");
                     }

@@ -2,9 +2,11 @@
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:haritham_noel/notifiers/auth_notifier.dart';
 import 'package:haritham_noel/pages/otp_page.dart';
 
-import 'package:haritham_noel/services/AuthService.dart';
+import 'package:provider/provider.dart';
+
 
 
 class LoginPage extends StatelessWidget {
@@ -29,6 +31,7 @@ final TextEditingController _phoneController = TextEditingController();
         child: SingleChildScrollView(
           child: Container(
             height: MediaQuery.of(context).size.height,
+            width: MediaQuery.of(context).size.width,
             child: Column(
               children: <Widget>[
                 Expanded(
@@ -109,7 +112,9 @@ final TextEditingController _phoneController = TextEditingController();
                           onPressed: () async {
                             var phone = _phoneController.text;
                             if (_phoneController.text.isNotEmpty) {
-                              var jwt = await AuthService.generatePassword(phone);
+                              var jwt = await context
+                                    .read<AuthNotifier>()
+                                    .generatePassword(phone);
                               print(jwt);
                               if(jwt != null) {
                                 Navigator.push(

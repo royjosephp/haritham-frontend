@@ -1,42 +1,57 @@
 import 'package:flutter/material.dart';
-import 'dart:convert' show json, base64, ascii;
+import 'package:haritham_noel/notifiers/auth_notifier.dart';
+import 'package:haritham_noel/notifiers/report_notifier.dart';
+import 'package:haritham_noel/pages/login_page.dart';
 
-import 'package:http/http.dart' as http;
+import 'package:haritham_noel/pages/reports/new_form.dart';
+import 'package:provider/provider.dart';
 
-import '../constants/strings.dart' show Strings;
+import 'package:haritham_noel/pages/reports/reports_list.dart';
 
 class HomePage extends StatelessWidget {
-  HomePage(this.jwt, this.payload);
-  
-  factory HomePage.fromBase64(String jwt) =>
-    HomePage(
-      jwt,
-      json.decode(
-        ascii.decode(
-          base64.decode(base64.normalize(jwt.split(".")[1]))
-        )
-      )
-    );
-
-  final String jwt;
-  final Map<String, dynamic> payload;
-
   @override
-  Widget build(BuildContext context) =>
-    Scaffold(
+  Widget build(BuildContext context) {
+    return Scaffold(
       appBar: AppBar(title: Text("Secret Data Screen")),
-      body: Center(
-        child: FutureBuilder(
-          future: http.read('${Strings.SERVER_IP}/reports', headers: {"Authorization": "Bearer $jwt"}),
-          builder: (context, snapshot) =>
-            snapshot.hasData ?
-            Column(children: <Widget>[
-              Text("${payload['id']}, here's the data:"),
-              Text(snapshot.data)
-            ],)
-            :
-            snapshot.hasError ? Text("An error occurred") : CircularProgressIndicator()
-        ),
+      body: Column(
+        children: [
+          RaisedButton(
+            padding: const EdgeInsets.all(17.0),
+            textColor: Colors.white,
+            color: Colors.green,
+            onPressed: () {
+              Navigator.push(context,
+                  new MaterialPageRoute(builder: (context) => NewReportForm()));
+            },
+            child: new Text("Report new case"),
+          ),
+          RaisedButton(
+            padding: const EdgeInsets.all(17.0),
+            textColor: Colors.white,
+            color: Colors.green,
+            onPressed: () {
+              Navigator.push(
+                  context,
+                  new MaterialPageRoute(
+                      builder: (context) => ReportListPage()));
+            },
+            child: new Text("Show All Reports"),
+          ),
+          RaisedButton(
+            padding: const EdgeInsets.all(17.0),
+            textColor: Colors.white,
+            color: Colors.green,
+            onPressed: () {
+              context.read<AuthNotifier>().signOut();
+              Navigator.pushAndRemoveUntil(
+                  context,
+                  MaterialPageRoute(builder: (_) => LoginPage()),
+                  (route) => false);
+            },
+            child: new Text("SignOut"),
+          ),
+        ],
       ),
     );
+  }
 }
