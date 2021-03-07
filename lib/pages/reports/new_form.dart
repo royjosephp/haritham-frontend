@@ -24,7 +24,7 @@ class _NewReportFormState extends State<NewReportForm> {
   ReportModel _reportDetails = new ReportModel(); // new line
   LocationModel _locationDetails = new LocationModel();
 
-  Address _fullAddress ;
+  Address _fullAddress;
 
   bool loading = false;
 
@@ -87,7 +87,8 @@ class _NewReportFormState extends State<NewReportForm> {
     }
     final result = await location.getLocation();
     _locationDetails.coordinates = [result.latitude, result.longitude];
-    _fullAddress = await getSetAddress(new Coordinates(result.latitude, result.longitude));
+    _fullAddress =
+        await getSetAddress(new Coordinates(result.latitude, result.longitude));
     return result;
   }
 
@@ -157,8 +158,8 @@ class _NewReportFormState extends State<NewReportForm> {
                                 ),
                                 height: 250.0,
                                 decoration: BoxDecoration(
-                                  // color: Colors.grey[400],
-                                ),
+                                    // color: Colors.grey[400],
+                                    ),
                               ),
                             ),
                             Padding(
@@ -168,12 +169,8 @@ class _NewReportFormState extends State<NewReportForm> {
                                 controller: _addressLineController,
                                 style: Theme.of(context).textTheme.bodyText2,
                                 decoration: InputDecoration(
-                                  icon: Icon(Icons.location_pin),
-                                  enabledBorder: OutlineInputBorder(
-                                      borderSide: BorderSide(
-                                          color:
-                                              Theme.of(context).iconTheme.color,
-                                          width: 2)),
+                                  // icon: Icon(Icons.location_pin),
+                                  border: OutlineInputBorder(),
                                   labelText: "Location",
                                   alignLabelWithHint: true,
                                 ),
@@ -189,11 +186,7 @@ class _NewReportFormState extends State<NewReportForm> {
                                 maxLines: 3,
                                 decoration: InputDecoration(
                                   // icon: Icon(Icons.my_location),
-                                  enabledBorder: OutlineInputBorder(
-                                      borderSide: BorderSide(
-                                          color:
-                                              Theme.of(context).iconTheme.color,
-                                          width: 2)),
+                                  border: OutlineInputBorder(),
                                   labelText: "Location Details",
                                   hintText:
                                       'Provide more details regarding the place',
@@ -204,7 +197,7 @@ class _NewReportFormState extends State<NewReportForm> {
                               ),
                             ),
                             Padding(
-                              padding: const EdgeInsets.symmetric(vertical: 2),
+                              padding: const EdgeInsets.symmetric(vertical: 8),
                               child: TextFormField(
                                 onSaved: (val) => _reportDetails.district = val,
                                 enabled: false,
@@ -212,11 +205,7 @@ class _NewReportFormState extends State<NewReportForm> {
                                 style: Theme.of(context).textTheme.bodyText2,
                                 decoration: InputDecoration(
                                   // icon: Icon(Icons.location_pin),
-                                  enabledBorder: OutlineInputBorder(
-                                      borderSide: BorderSide(
-                                          color:
-                                              Theme.of(context).iconTheme.color,
-                                          width: 2)),
+                                  border: OutlineInputBorder(),
                                   labelText: "District",
                                   alignLabelWithHint: true,
                                 ),
@@ -240,27 +229,31 @@ class _NewReportFormState extends State<NewReportForm> {
                             //   ),
                             //   ),
                             //   ),
-                            DropdownButtonFormField(
-                              onSaved: (val) =>
-                                  _reportDetails.type = val.toString(),
-                              value: dropdownValue,
-                              isExpanded: true,
-                              items: typeOptions.map<DropdownMenuItem>(
-                                (val) {
-                                  return DropdownMenuItem(
-                                    child: Text(val.toString()),
-                                    value: val.toString(),
-                                  );
+                            Padding(
+                              padding: const EdgeInsets.symmetric(vertical: 8),
+                              child: DropdownButtonFormField(
+                                onSaved: (val) =>
+                                    _reportDetails.type = val.toString(),
+                                value: dropdownValue,
+                                isExpanded: true,
+                                items: typeOptions.map<DropdownMenuItem>(
+                                  (val) {
+                                    return DropdownMenuItem(
+                                      child: Text(val.toString()),
+                                      value: val.toString(),
+                                    );
+                                  },
+                                ).toList(),
+                                onChanged: (val) {
+                                  setState(() {
+                                    dropdownValue = val.toString();
+                                  });
                                 },
-                              ).toList(),
-                              onChanged: (val) {
-                                setState(() {
-                                  dropdownValue = val.toString();
-                                });
-                              },
-                              decoration: InputDecoration(
-                                labelText: 'Type of offence',
-                                // icon: Icon(Icons.calendar_today),
+                                decoration: InputDecoration(
+                                  labelText: 'Type of offence',
+                                  border: OutlineInputBorder(),
+                                  // icon: Icon(Icons.calendar_today),
+                                ),
                               ),
                             ),
                             Padding(
@@ -273,11 +266,7 @@ class _NewReportFormState extends State<NewReportForm> {
                                 maxLines: 3,
                                 decoration: InputDecoration(
                                   // icon: Icon(Icons.my_location),
-                                  enabledBorder: OutlineInputBorder(
-                                      borderSide: BorderSide(
-                                          color:
-                                              Theme.of(context).iconTheme.color,
-                                          width: 2)),
+                                  border: OutlineInputBorder(),
                                   labelText: "Description",
                                   hintText: 'Description of offence',
                                   alignLabelWithHint: true,
@@ -293,14 +282,26 @@ class _NewReportFormState extends State<NewReportForm> {
                                   setState(() {
                                     loading = true;
                                   });
+
+                                  if(_image == null) {
+                                    ScaffoldMessenger.of(context)
+                                    ..removeCurrentSnackBar()
+                                    ..showSnackBar(SnackBar(
+                                        content: Text("Attach an image")));
+                                    return;
+                                  }
+
                                   _formKey.currentState.save();
                                   _locationDetails.type = 'Point';
                                   _reportDetails.location = _locationDetails;
                                   _reportDetails.state = _fullAddress.adminArea;
-                                  await Provider.of<ReportNotifier>(context, listen: false).addReports(_reportDetails, _image.path);
+                                  await Provider.of<ReportNotifier>(context,
+                                          listen: false)
+                                      .addReports(_reportDetails, _image.path);
                                   setState(() {
                                     loading = false;
                                   });
+                                  Navigator.of(context).pop();
                                   // After the Selection Screen returns a result, hide any previous snackbars
                                   // and show the new result.
                                   ScaffoldMessenger.of(context)
@@ -312,9 +313,7 @@ class _NewReportFormState extends State<NewReportForm> {
 
                                 }
                               },
-                              child: loading
-                                  ? Text('...')
-                                  : Text('Submit'),
+                              child: loading ? Text("Submitting...") : Text('Submit'),
                             ),
                           ],
                         ),

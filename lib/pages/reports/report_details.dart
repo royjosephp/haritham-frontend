@@ -1,5 +1,5 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:geocoder/geocoder.dart';
 import 'package:haritham_noel/global.dart';
 import 'package:haritham_noel/models/report_model.dart';
 import 'package:haritham_noel/notifiers/report_notifier.dart';
@@ -66,7 +66,7 @@ class ReportDetailsContainer extends StatelessWidget {
       children: [
         ReportImage(report.image.data),
         ReportTitle(report.location, report.created_at),
-        ReportBody(report: report),
+        ReportBody(report),
       ],
     );
   }
@@ -81,16 +81,9 @@ class ReportImage extends StatelessWidget {
   Widget build(BuildContext context) {
     return AspectRatio(
       aspectRatio: 16.0 / 9.0,
-      child: 
-    //   CachedNetworkImage(
-    //     imageUrl: imageURL,
-    //     progressIndicatorBuilder: (context, url, downloadProgress) => 
-    //             CircularProgressIndicator(value: downloadProgress.progress),
-    //     errorWidget: (context, url, error) => Icon(Icons.error),
-    //  ),
-      Image.network(
+      child: Image.network(
         imageURL,
-        fit: BoxFit.cover,
+        fit: BoxFit.contain,
       ),
     );
   }
@@ -104,44 +97,88 @@ class ReportTitle extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: EdgeInsets.all(5.0),
-      child: Column(
-        // Default value for crossAxisAlignment is CrossAxisAlignment.center.
-        // We want to align title and description of recipes left:
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget>[
-          Text(
-            location.coordinates.toString(),
-            style: Theme.of(context).textTheme.headline6,
-          ),
-          // Empty space:
-          SizedBox(height: 10.0),
-          Row(
-            children: [
-              Icon(Icons.timer, size: 20.0),
-              SizedBox(width: 5.0),
-              Text(
-                date,
-                style: Theme.of(context).textTheme.caption,
-              ),
-            ],
-          ),
-        ],
-      ),
-    );
+    return FutureBuilder<List<Address>>(
+        future: Geocoder.local.findAddressesFromCoordinates(
+            new Coordinates(location.coordinates[0], location.coordinates[1])),
+        builder: (context, snapshot) {
+          switch (snapshot.hasData) {
+            case true:
+              return Padding(
+                padding: EdgeInsets.all(5.0),
+                child: Column(
+                  // Default value for crossAxisAlignment is CrossAxisAlignment.center.
+                  // We want to align title and description of recipes left:
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    Text(
+                      snapshot.data.first.addressLine,
+                      style: Theme.of(context).textTheme.headline6,
+                    ),
+                    // Empty space:
+                    SizedBox(height: 10.0),
+                    Row(
+                      children: [
+                        Icon(Icons.timer, size: 20.0),
+                        SizedBox(width: 5.0),
+                        Text(
+                          date,
+                          style: Theme.of(context).textTheme.caption,
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              );
+            default:
+              return Center(
+                child: CircularProgressIndicator(),
+              );
+          }
+        });
   }
 }
 
 class ReportBody extends StatelessWidget {
-
   final ReportModel report;
 
   ReportBody(this.report);
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return Column(
+      children: [
+        Padding(
+          padding: const EdgeInsets.fromLTRB(20.0, 20.0, 20.0, 20.0),
+          child: Table(
+            columnWidths: {
+              0: FlexColumnWidth(1),
+              1: FlexColumnWidth(3),
+            },
+            children: [
+              TableRow(children: [
+                Text("State:"),
+                Text(report.state),
+              ]),
+              TableRow(children: [
+                Text("District:"),
+                Text(report.district),
+              ]),
+              TableRow(children: [
+                Text("Type:"),
+                Text(report.type),
+              ]),
+              TableRow(children: [
+                Text("Description:"),
+                Text(report.description),
+              ]),
+            ],
+          ),
+        ),
+        ListTile(
+          leading: Icon(Icons.pending_actions),
+          title: Text("Action Taken"),
+        ),
+      ],
     );
   }
 }

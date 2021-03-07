@@ -17,6 +17,7 @@ class LoginPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(),
       body: SafeArea(
         child: SingleChildScrollView(
           child: Container(
@@ -25,18 +26,14 @@ class LoginPage extends StatelessWidget {
             child: Column(
               children: <Widget>[
                 Expanded(
-                  flex: 2,
+                  flex: 1,
                   child: Column(
                     children: <Widget>[
                       Container(
                         margin: const EdgeInsets.symmetric(
-                            horizontal: 20, vertical: 20),
-                        child: Center(
-                          child: Container(
-                              constraints: const BoxConstraints(maxHeight: 350),
-                              margin: const EdgeInsets.symmetric(horizontal: 8),
-                              child: Image.asset('assets/img/login.png')),
-                        ),
+                            horizontal: 20, vertical: 80),
+                        child:
+                            Center(child: Image.asset('assets/img/login.png')),
                       ),
                     ],
                   ),

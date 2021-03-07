@@ -17,7 +17,7 @@ class HomePage extends StatelessWidget {
       appBar: AppBar(
         toolbarHeight: 60,
         // backgroundColor: Colors.green[400],
-        elevation: 0,
+        elevation: 9,
         centerTitle: true,
         // iconTheme: IconThemeData(color: Colors.white),
         title: Image(
@@ -25,7 +25,14 @@ class HomePage extends StatelessWidget {
           height: 40,
         ),
         actions: [
-          Icon(Icons.notifications_active),
+          IconButton(
+            icon: const Icon(Icons.notifications_active),
+            tooltip: 'Show notifications',
+            onPressed: () {
+              ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text('Open notification Page')));
+            },
+          )
         ],
         //Text("ഹരിതം", textAlign: TextAlign.center, style: TextStyle(color:Colors.green,fontSize: 25, fontWeight: FontWeight.bold)),
       ),
@@ -35,7 +42,7 @@ class HomePage extends StatelessWidget {
           children: <Widget>[
             DrawerHeader(
               decoration: BoxDecoration(
-                // color: Colors.white,
+                 color: Theme.of(context).colorScheme.secondary,
               ),
               child: Text(
                 '',
@@ -45,10 +52,7 @@ class HomePage extends StatelessWidget {
                 ),
               ),
            ),
-            ListTile(
-              leading: Icon(Icons.login),
-              title: Text('Official Login'),
-            ),
+            
             ListTile(
               leading: Icon(Icons.account_circle),
               title: Text('Profile'),
@@ -87,11 +91,12 @@ class HomePage extends StatelessWidget {
             height: 10,
           ),
           ListTile(
-            tileColor: Colors.grey[700],
+           // tileColor: Colors.grey[700],
+           tileColor: Theme.of(context).colorScheme.secondary,
             title: Text(
               'ഹരിത നിയമ ലംഘനങ്ങൾ',
               style: TextStyle(
-                // color: Colors.white,
+                 color: Theme.of(context).colorScheme.background,
               ),
               textAlign: TextAlign.center,
             ),
@@ -236,7 +241,7 @@ final List<Widget> imageSliders = imgList
                           textAlign: TextAlign.center,
                           // '${imgList.indexOf(item)} നിയമ ലംഘനങ്ങൾ',
                           style: TextStyle(
-                            // color: Colors.white,
+                             color: Colors.white,
                             fontSize: 15.0,
                             fontWeight: FontWeight.bold,
                           ),
