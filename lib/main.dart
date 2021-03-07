@@ -1,11 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:haritham_noel/services/AuthService.dart';
 
 import 'package:haritham_noel/global.dart';
-
-import 'dart:convert' show json, base64, ascii;
-
 
 import 'pages/login_page.dart';
 import 'pages/home_page.dart';
@@ -13,6 +9,8 @@ import 'pages/home_page.dart';
 import 'package:provider/provider.dart';
 import 'package:haritham_noel/notifiers/auth_notifier.dart';
 import 'package:haritham_noel/notifiers/report_notifier.dart';
+
+import 'package:flex_color_scheme/flex_color_scheme.dart';
 
 final storage = FlutterSecureStorage();
 
@@ -31,10 +29,13 @@ class MyApp extends StatelessWidget {
       ],
       child: MaterialApp(
         title: 'Flutter Provider Proto',
-        theme: ThemeData(
-          primarySwatch: Colors.green,
-          visualDensity: VisualDensity.adaptivePlatformDensity,
-        ),
+        // The Mandy red, light theme.
+      theme: FlexColorScheme.light(scheme: FlexScheme.green).toTheme,
+      // The Mandy red, dark theme.
+      darkTheme: FlexColorScheme.dark(scheme: FlexScheme.green).toTheme,
+      // Use dark or light theme based on system setting.
+      themeMode: ThemeMode.system,
+        
         home: ProviderWrap(),
       )
     );

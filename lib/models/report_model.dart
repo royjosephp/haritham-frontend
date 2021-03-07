@@ -1,3 +1,4 @@
+import 'package:intl/intl.dart';
 
 class ReportModel {
     ReportModel({
@@ -9,7 +10,7 @@ class ReportModel {
         this.description,
         this.image,
         this.user,
-        this.v,
+        this.created_at,
     });
 
     String id;
@@ -20,30 +21,29 @@ class ReportModel {
     String description;
     ImageModel image;
     String user;
-    int v;
+    String created_at;
 
     factory ReportModel.fromJson(Map<String, dynamic> json) => ReportModel(
         id: json["_id"],
         location: LocationModel.fromJson(json["location"]),
-        state: json["state"],
         district: json["district"],
+        state: json["state"],
         type: json["type"],
         description: json["description"] == null ? null : json["description"],
         image: json["image"] == null ? null : ImageModel.fromJson(json["image"]),
         user: json["user"],
-        v: json["__v"],
+        created_at: DateFormat().format(DateTime.parse(json["created_at"]).toLocal()),
     );
 
     Map<String, dynamic> toJson() => {
-        "_id": id,
+        "_id": id == null ? null : id,
         "location": location.toJson(),
-        "state": state,
         "district": district,
+        "state": state,
         "type": type,
-        "description": description,
-        "image": image.toJson(),
-        "user": user,
-        "__v": v,
+        "description": description == null ? null : description,
+        "image": image == null ? null : image.toJson(),
+        "user": user == null ? null : user,
     };
 }
 
@@ -79,13 +79,13 @@ class LocationModel {
         this.description,
     });
 
-    List<int> coordinates;
+    List<double> coordinates;
     String id;
     String type;
     String description;
 
     factory LocationModel.fromJson(Map<String, dynamic> json) => LocationModel(
-        coordinates: List<int>.from(json["coordinates"].map((x) => x)),
+        coordinates: List<double>.from(json["coordinates"].map((x) => x)),
         id: json["_id"],
         type: json["type"],
         description: json["description"],
@@ -93,7 +93,6 @@ class LocationModel {
 
     Map<String, dynamic> toJson() => {
         "coordinates": List<dynamic>.from(coordinates.map((x) => x)),
-        "_id": id,
         "type": type,
         "description": description,
     };

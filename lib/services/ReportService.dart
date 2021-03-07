@@ -1,12 +1,16 @@
 import 'dart:convert';
 
-import 'package:haritham_noel/main.dart';
 import 'package:haritham_noel/util/storage.dart';
 import "package:http/http.dart" as http;
 
+import 'package:http_parser/http_parser.dart' as http_parser;
+
 import "package:haritham_noel/global.dart";
 
-import 'package:haritham_noel/models/report.dart';
+import 'package:haritham_noel/models/report_model.dart';
+
+import 'package:mime/mime.dart';
+
 
 class ReportService {
   static final String _baseUrl = SERVER_IP;
@@ -16,7 +20,6 @@ class ReportService {
   // Get all the posts
   Future<List<ReportModel>> getReports() async {
     String jwt = await storage.jwtOrEmpty;
-    print(jwt);
     final response = await http.get("$_baseUrl/reports",
       headers: {
         'Content-Type': "application/json",
@@ -31,41 +34,49 @@ class ReportService {
     }
   }
 
-  // // Get all posts of a specific editor
-  // Future<List<ReportModel>> getSpecificEditorPosts(String userId) async {
-  //   final response = await http.post(
-  //     '$_baseUrl/posts/user',
-  //     body: json.encode(
-  //       {'id': '$userId'},
-  //     ),
-  //     headers: {'Content-Type': "application/json"},
-  //   );
+  // Add Report
+  Future<ReportModel> addReport(ReportModel reportDetails, String imagePath) async {
 
-  //   if (response.statusCode == 200) {
-  //     final parsed = json.decode(response.body).cast<Map<String, dynamic>>();
-  //     return parsed.map<ReportModel>((json) => ReportModel.fromJson(json)).toList();
-  //   } else {
-  //     throw Exception(response.body);
-  //   }
-  // }
+    String jwt = await storage.jwtOrEmpty;
+
+    var request = http.MultipartRequest('POST', Uri.parse('$_baseUrl/reports'));
+    request.fields['state'] = reportDetails.state;
+    request.fields['district'] = reportDetails.district;
+    request.fields['type'] = reportDetails.type;
+    request.fields['description'] = reportDetails.description;
+    request.fields['location'] = json.encode(reportDetails.location.toJson());
+    
+    request.files.add(await http.MultipartFile.fromPath('image', imagePath, contentType: http_parser.MediaType.parse(lookupMimeType(imagePath))));
+    
+    request.headers['Content-Type'] = 'application/json';
+    request.headers['Authorization'] = 'Bearer $jwt';
+
+
+    var res = await request.send();
+
+    if (res.statusCode == 201) {
+      var responseBody = await res.stream.bytesToString();
+      return ReportModel.fromJson(
+        json.decode(responseBody)['report'],
+      );
+    } else {
+      throw Exception(res.reasonPhrase);
+    }
+  }
 
   // Get single post by ID
   Future<ReportModel> getSingleReport(String id) async {
     String jwt = await storage.jwtOrEmpty;
-    print(jwt);
-    final response = await http.post(
-      '$_baseUrl/reports/id',
-      body: json.encode(
-        {'id': '$id'},
-      ),
+    final response = await http.get(
+      '$_baseUrl/reports/$id',
       headers: {
         'Content-Type': "application/json",
-        'Authentication': "Bearer $jwt"
+        'Authorization': "Bearer $jwt"
         },
     );
     if (response.statusCode == 200) {
       return ReportModel.fromJson(
-        json.decode(response.body),
+        json.decode(response.body)["report"],
       );
     } else {
       throw Exception(response.body);

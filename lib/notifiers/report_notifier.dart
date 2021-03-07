@@ -1,5 +1,5 @@
 import 'package:haritham_noel/global.dart';
-import 'package:haritham_noel/models/report.dart';
+import 'package:haritham_noel/models/report_model.dart';
 import 'package:haritham_noel/services/ReportService.dart';
 import 'package:flutter/material.dart';
 
@@ -27,5 +27,9 @@ class ReportNotifier extends ChangeNotifier {
     _singleReport = await _api.getSingleReport(id);
     _status = Status.done;
     notifyListeners();
+  }
+
+  addReports(ReportModel reportDetails, String imagePath) async {
+    await _api.addReport(reportDetails, imagePath);
   }
 }

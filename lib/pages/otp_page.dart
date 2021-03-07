@@ -65,7 +65,7 @@ void displayDialog(context, title, text) => showDialog(
                     displayDialog(context, "An Error Occurred", "Please provide otp");
                   }
                 },
-                color: Color(0xFF503E9D),
+                // color: Color(0xFF503E9D),
                 shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(14))),
                 child: Container(
                   padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 8),
@@ -74,17 +74,17 @@ void displayDialog(context, title, text) => showDialog(
                     children: <Widget>[
                       Text(
                         'Next',
-                        style: TextStyle(color: Colors.white),
+                        // style: TextStyle(color: Colors.white),
                       ),
                       Container(
                         padding: const EdgeInsets.all(8),
                         decoration: BoxDecoration(
                           borderRadius: const BorderRadius.all(Radius.circular(20)),
-                          color: Color(0xFF6252A7),
+                          // color: Color(0xFF6252A7),
                         ),
                         child: Icon(
                           Icons.arrow_forward_ios,
-                          color: Colors.white,
+                          // color: Colors.white,
                           size: 16,
                         ),
                       )

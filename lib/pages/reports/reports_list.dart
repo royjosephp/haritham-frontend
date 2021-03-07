@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:haritham_noel/models/report.dart';
+
+import 'package:haritham_noel/models/report_model.dart';
 
 import 'package:provider/provider.dart';
 
 import 'package:haritham_noel/notifiers/report_notifier.dart';
+
+import 'report_details.dart';
 
 import '../../global.dart';
 
@@ -30,8 +33,8 @@ class _ReportListPageState extends State<ReportListPage> {
               builder: (ctx, snapshot, _) {
                 switch (snapshot.status) {
                   case Status.loading:
-                    return ReportsList(
-                      reports: [],
+                    return Center(
+                      child: CircularProgressIndicator(),
                     );
                     break;
                   case Status.done:
@@ -54,54 +57,47 @@ class _ReportListPageState extends State<ReportListPage> {
 }
 
 class ReportsList extends StatelessWidget {
-  final Function onTap;
   final List<ReportModel> reports;
   final ScrollController scrollController;
   const ReportsList({
     Key key,
     this.scrollController,
     @required this.reports,
-    this.onTap,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 5.0),
-      child: Row(
-        children: <Widget>[
-          Flexible(
-            flex: 4,
-            child: ListView.builder(
-              controller: scrollController,
-              itemCount: reports.length,
-              itemBuilder: (ctx, i) {
-                return GestureDetector(
-                  onTap: () {
-                    // Go to single Post
-                  },
-                  child: ReportContainer(
-                    postId: reports[i].id,
-                    location: reports[i].location,
-                    state: reports[i].state,
-                    district: reports[i].district,
-                    type: reports[i].type,
-                    description: reports[i].description,
-                    image: reports[i].image,
-                    user: reports[i].user,
-                  ),
-                );
-              },
+    return Container(
+      child: ListView.builder(
+        controller: scrollController,
+        itemCount: reports.length,
+        itemBuilder: (ctx, i) {
+          return GestureDetector(
+            onTap: () {
+              // Go to single Post
+              Navigator.push(
+                context, MaterialPageRoute(builder: (context) => ReportDetailPage(postId: reports[i].id)));
+            },
+            child: ReportContainer(
+              postId: reports[i].id,
+              location: reports[i].location,
+              state: reports[i].state,
+              district: reports[i].district,
+              type: reports[i].type,
+              description: reports[i].description,
+              image: reports[i].image,
+              user: reports[i].user,
+              created_at: reports[i].created_at,
             ),
-          )
-        ],
+          );
+        },
       ),
     );
   }
 }
 
 class ReportContainer extends StatelessWidget {
-  final String state, district, type, description, user, postId;
+  final String state, district, type, description, user, postId, created_at;
   final ImageModel image;
   final LocationModel location;
   ReportContainer({
@@ -113,29 +109,23 @@ class ReportContainer extends StatelessWidget {
     @required this.description,
     @required this.image,
     @required this.user,
+    @required this.created_at,
     @required this.postId,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Card(
+      elevation: 8.0,
+      margin: new EdgeInsets.symmetric(horizontal: 10.0, vertical: 6.0),
       clipBehavior: Clip.antiAlias,
       child: Column(
         children: [
           ListTile(
-            title: const Text('Card title 1'),
-            subtitle: Text(
-              '$district, $state',
-              style: TextStyle(color: Colors.black.withOpacity(0.6)),
-            ),
+            title: Text("$district, $state"),
+            subtitle: Text(created_at),
+            trailing: Icon(Icons.keyboard_arrow_right, size: 30.0),
           ),
-          Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Text(
-              description,
-              style: TextStyle(color: Colors.black.withOpacity(0.6)),
-            ),
-          )
         ],
       ),
     );

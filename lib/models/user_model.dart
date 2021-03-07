@@ -2,8 +2,6 @@
 //
 //     final welcome = User.fromJson(json.decode(str));
 
-import 'dart:convert';
-
 class User {
     User({
         this.inactive,
