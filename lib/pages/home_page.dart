@@ -100,7 +100,7 @@ class HomePage extends StatelessWidget {
               ),
               textAlign: TextAlign.center,
             ),
-            trailing: RaisedButton(
+            trailing: ElevatedButton(
               // color: Colors.white,
               onPressed: () {
                 Navigator.push(
@@ -121,10 +121,11 @@ class HomePage extends StatelessWidget {
           SizedBox(
             height: 20,
           ),
-          RaisedButton(
-            padding: const EdgeInsets.all(17.0),
+          ElevatedButton(
+            
             // textColor: Colors.white,
             // color: Colors.green,
+            
             onPressed: () {
               Navigator.push(context,
                   new MaterialPageRoute(builder: (context) => NewReportForm()));
@@ -133,6 +134,15 @@ class HomePage extends StatelessWidget {
           ),
           SizedBox(
             height: 20,
+          ),
+          RaisedButton(
+            // textColor: Colors.white,
+            color: Theme.of(context).colorScheme.secondary,
+            onPressed: () {
+              Navigator.push(context,
+                  new MaterialPageRoute(builder: (context) => ReportListPage()));
+            },
+            child: new Text("ഇതിനകം റിപ്പോർട്ട് ചെയ്തവ"),
           ),
         ],
       ),

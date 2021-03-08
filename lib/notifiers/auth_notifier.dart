@@ -56,11 +56,11 @@ class AuthNotifier with ChangeNotifier {
     }
   }
 
-  Future<bool> verifyPassword(String otp) async {
+  Future<bool> verifyPassword(String phone, String otp) async {
     try {
       _status = AuthStatus.Authenticating;
       notifyListeners();
-      var output = await _service.verifyPassword(otp);
+      var output = await _service.verifyPassword(phone, otp);
       var jwt = jsonDecode(output)["token"];
       await storage.setJwt(jwt);
       _jwt = jwt;

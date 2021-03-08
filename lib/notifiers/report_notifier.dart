@@ -30,6 +30,12 @@ class ReportNotifier extends ChangeNotifier {
   }
 
   addReports(ReportModel reportDetails, String imagePath) async {
+    try{
     await _api.addReport(reportDetails, imagePath);
+    return true;
+    }
+    catch (error) {
+      return false;
+    }
   }
 }

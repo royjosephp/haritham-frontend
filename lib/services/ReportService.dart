@@ -20,7 +20,7 @@ class ReportService {
   // Get all the posts
   Future<List<ReportModel>> getReports() async {
     String jwt = await storage.jwtOrEmpty;
-    final response = await http.get("$_baseUrl/reports",
+    final response = await http.get("$_baseUrl/reports/_self",
       headers: {
         'Content-Type': "application/json",
         'Authorization': "Bearer $jwt"

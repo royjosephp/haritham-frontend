@@ -85,7 +85,7 @@ class LocationModel {
     String description;
 
     factory LocationModel.fromJson(Map<String, dynamic> json) => LocationModel(
-        coordinates: List<double>.from(json["coordinates"].map((x) => x)),
+        coordinates: List<double>.from(json["coordinates"].map((x) => x.toDouble())),
         id: json["_id"],
         type: json["type"],
         description: json["description"],

@@ -84,6 +84,14 @@ class ReportImage extends StatelessWidget {
       child: Image.network(
         imageURL,
         fit: BoxFit.contain,
+        loadingBuilder: (context, child, loadingProgress) {
+            if (loadingProgress == null) return child;
+
+            return Center(child: LinearProgressIndicator());
+            // You can use LinearProgressIndicator or CircularProgressIndicator instead
+          },
+          errorBuilder: (context, error, stackTrace) =>
+              Text('Some errors occurred!'),
       ),
     );
   }

@@ -17,7 +17,7 @@ final storage = FlutterSecureStorage();
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
-  
+
   // Than we setup preferred orientations,
   // and only after it finished we run our app
   SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp])
@@ -28,23 +28,21 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
-      providers: [
-        ChangeNotifierProvider(create: (_) => AuthNotifier.instance()),
-        ChangeNotifierProvider(create: (_) => ReportNotifier()),
+        providers: [
+          ChangeNotifierProvider(create: (_) => AuthNotifier.instance()),
+          ChangeNotifierProvider(create: (_) => ReportNotifier()),
+        ],
+        child: MaterialApp(
+          title: 'Flutter Provider Proto',
+          // The Mandy red, light theme.
+          theme: FlexColorScheme.light(scheme: FlexScheme.green).toTheme,
+          // The Mandy red, dark theme.
+          darkTheme: FlexColorScheme.dark(scheme: FlexScheme.green).toTheme,
+          // Use dark or light theme based on system setting.
+          themeMode: ThemeMode.system,
 
-      ],
-      child: MaterialApp(
-        title: 'Flutter Provider Proto',
-        // The Mandy red, light theme.
-      theme: FlexColorScheme.light(scheme: FlexScheme.green).toTheme,
-      // The Mandy red, dark theme.
-      darkTheme: FlexColorScheme.dark(scheme: FlexScheme.green).toTheme,
-      // Use dark or light theme based on system setting.
-      themeMode: ThemeMode.system,
-        
-        home: ProviderWrap(),
-      )
-    );
+          home: ProviderWrap(),
+        ));
   }
 }
 
@@ -73,15 +71,7 @@ class SplashScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Material(
       child: Center(
-        child: Column(
-          children: [
-            CircularProgressIndicator(),
-            Text(
-              'Splash screen',
-              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-            )
-          ],
-        ),
+        child: CircularProgressIndicator(),
       ),
     );
   }

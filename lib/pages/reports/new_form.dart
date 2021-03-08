@@ -187,9 +187,9 @@ class _NewReportFormState extends State<NewReportForm> {
                                 decoration: InputDecoration(
                                   // icon: Icon(Icons.my_location),
                                   border: OutlineInputBorder(),
-                                  labelText: "Location Details",
+                                  labelText: "Exact Location",
                                   hintText:
-                                      'Provide more details regarding the place',
+                                      'ലംഘനം നടന്ന കൃത്യമായ സ്ഥലം',
                                   alignLabelWithHint: true,
                                   contentPadding: new EdgeInsets.symmetric(
                                       vertical: 10.0, horizontal: 10.0),
@@ -268,7 +268,7 @@ class _NewReportFormState extends State<NewReportForm> {
                                   // icon: Icon(Icons.my_location),
                                   border: OutlineInputBorder(),
                                   labelText: "Description",
-                                  hintText: 'Description of offence',
+                                  hintText: 'നിയമ ലംഘനത്തിന്റെ വിശദവിവരം',
                                   alignLabelWithHint: true,
                                   contentPadding: new EdgeInsets.symmetric(
                                       vertical: 10.0, horizontal: 10.0),
@@ -288,6 +288,9 @@ class _NewReportFormState extends State<NewReportForm> {
                                     ..removeCurrentSnackBar()
                                     ..showSnackBar(SnackBar(
                                         content: Text("Attach an image")));
+                                        setState(() {
+                                    loading = false;
+                                  });
                                     return;
                                   }
 
@@ -295,19 +298,21 @@ class _NewReportFormState extends State<NewReportForm> {
                                   _locationDetails.type = 'Point';
                                   _reportDetails.location = _locationDetails;
                                   _reportDetails.state = _fullAddress.adminArea;
-                                  await Provider.of<ReportNotifier>(context,
+                                  var result = await Provider.of<ReportNotifier>(context,
                                           listen: false)
                                       .addReports(_reportDetails, _image.path);
                                   setState(() {
                                     loading = false;
                                   });
-                                  Navigator.of(context).pop();
+                                  if(result){
+                                    Navigator.of(context).pop();
+                                  }
                                   // After the Selection Screen returns a result, hide any previous snackbars
                                   // and show the new result.
                                   ScaffoldMessenger.of(context)
                                     ..removeCurrentSnackBar()
                                     ..showSnackBar(SnackBar(
-                                        content: Text("Report Submitted")));
+                                        content: Text(result ? "Report Submitted" : "Form submission failed")));
                                   // If the form is valid, display a snackbar. In the real world,
                                   // you'd often call a server or save the information in a database.
 

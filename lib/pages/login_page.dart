@@ -94,7 +94,7 @@ class LoginPage extends StatelessWidget {
                                 Navigator.push(
                                     context,
                                     MaterialPageRoute(
-                                        builder: (context) => OTPPage()));
+                                        builder: (context) => OTPPage(phone)));
                               } else {
                                 displayDialog(context, "An Error Occurred",
                                     "No account was found matching that username and password");

@@ -7,6 +7,10 @@ import 'package:haritham_noel/pages/home_page.dart';
 
 class OTPPage extends StatelessWidget {
 
+  final String phone;
+
+  OTPPage(this.phone);
+
 final TextEditingController _otpController = TextEditingController();
 
 void displayDialog(context, title, text) => showDialog(
@@ -34,12 +38,12 @@ void displayDialog(context, title, text) => showDialog(
               child: TextField(
                 decoration: InputDecoration(
                   contentPadding: const EdgeInsets.symmetric(horizontal: 16),
-                  hintText: '_ _ _ _ _',
+                  hintText: '_ _ _ _ _ _',
                   border: OutlineInputBorder(borderRadius: const BorderRadius.all(Radius.circular(4)))
                 ),
                 controller: _otpController,
                 maxLength: 6,
-                keyboardType: TextInputType.phone,
+                keyboardType: TextInputType.number,
                 maxLines: 1,
               ),
             ),
@@ -48,13 +52,13 @@ void displayDialog(context, title, text) => showDialog(
               constraints: const BoxConstraints(
                   maxWidth: 500
               ),
-              child: RaisedButton(
+              child: ElevatedButton(
                 onPressed: () async {
-                  var phone = _otpController.text;
+                  var otp = _otpController.text;
                   if (_otpController.text.isNotEmpty) {
                     var verified = await context
                                     .read<AuthNotifier>()
-                                    .verifyPassword(phone);
+                                    .verifyPassword(phone,otp);
                     if(verified) {
                       displayDialog(context, "Verification Successfull", "Verification Successfull");
                       Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (_) => HomePage()), (route) => false);
@@ -66,7 +70,7 @@ void displayDialog(context, title, text) => showDialog(
                   }
                 },
                 // color: Color(0xFF503E9D),
-                shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(14))),
+                // shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(14))),
                 child: Container(
                   padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 8),
                   child: Row(

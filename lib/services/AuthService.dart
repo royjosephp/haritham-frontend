@@ -22,10 +22,11 @@ class AuthService {
   }
 
 
-  Future<String> verifyPassword(String otp) async {
+  Future<String> verifyPassword(String phone, String otp) async {
     var res = await http.post(
       "$_baseUrl/auth/verify",
       body: jsonEncode({
+        "phone": phone,
         "password": otp
       }),
       headers: {"Content-type": "application/json"}

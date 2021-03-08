@@ -100,7 +100,7 @@ class DetailsPage2 extends StatelessWidget {
       backgroundColor: Colors.white,
       appBar: AppBar(
         toolbarHeight: 70,
-        backgroundColor: Colors.green[400],
+        backgroundColor: Colors.green,
         elevation: 0,
         centerTitle: true,
         iconTheme: IconThemeData(color: Colors.white),
